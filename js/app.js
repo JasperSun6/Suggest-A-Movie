@@ -71,7 +71,7 @@ const APP = {
   createTransaction: (storeName) => {
     let tx;
     //create a transaction to use for some interaction with the database
-    tx = APP.DB.transaction(storeName, "readWrite");
+    tx = APP.DB.transaction(storeName, "readwrite");
     return tx;
   },
 
@@ -82,12 +82,22 @@ const APP = {
   addResultsToDB: (obj, storeName) => {
     //pass in the name of the store
     //save the obj passed in to the appropriate store
+    let tx;
+    tx = APP.createTransaction(storeName);
+    let newStore = tx.objectStore(storeName);
+
+    let newMoviesObj = {
+      keyword: APP.input,
+      result: obj,
+    };
+
+    newStore.add(newMoviesObj);
   },
 
   addListeners: () => {
     //add listeners
     let btnSearch = document.getElementById("btnSearch");
-    btnSearch.addEventListener("click", APP.searchFormSubmitted());
+    btnSearch.addEventListener("click", APP.searchFormSubmitted);
     //when the search form is submitted
     //when clicking on the list of possible searches on home or 404 page
     //when a message is received
@@ -131,23 +141,22 @@ const APP = {
     ev.preventDefault();
     //get the keyword from teh input
     APP.input = document.getElementById("search").value;
-    console.log(input);
 
     //make sure it is not empty
-    //check the db for matches
-    //do a fetch call for search results
-    //save results to db
-    //navigate to url
-    if (!input) {
+    if (!APP.input) {
       alert("Empty input, please try it again.");
     } else {
       let searchResult = APP.createTransaction("searchResults");
       let searchStore = searchResult.objectStore("searchResults");
       let getResult = searchStore.get(APP.input);
       getResult.onsuccess = (ev) => {
+        //check the db for matches
         if (ev.target.result === undefined) {
+          //do a fetch call for search results
           APP.getData(APP.input);
         } else {
+          //save results to db
+          //navigate to url
           console.log("Results already in the Database");
         }
       };
@@ -164,7 +173,7 @@ const APP = {
     //navigate to the suggest page
   },
 
-  getData: (endpoint, callback) => {
+  getData: (endpoint) => {
     //do a fetch call to the endpoint
 
     let url = `${APP.tmdbBASEURL}search/movie?api_key=${APP.tmdbAPIKEY}&query=${endpoint}`;
@@ -181,10 +190,13 @@ const APP = {
         return resp.json();
       })
       .then((contents) => {
-        let results = contents.results;
-        //remove the properties we don't need
         //save the updated results to APP.results
-        // call the callback
+        //remove the properties we don't need
+        let results = contents.results;
+        APP.results = results;
+
+        APP.addResultsToDB(APP.results, "searchResults");
+        console.log(APP.results);
       })
       .catch((err) => {
         //handle the NetworkError
