@@ -7,9 +7,9 @@ const APP = {
   input: "",
   results: [],
   init: () => {
-    //when the page loads
     //open the database
-    APP.openDatabase(APP.registerSW); //register the service worker after the DB is open
+    //register the service worker after the DB is open
+    APP.openDatabase(APP.registerSW);
   },
 
   registerSW: () => {
@@ -136,29 +136,11 @@ const APP = {
     //get the keyword from the input
     APP.input = document.getElementById("search").value.toLowerCase();
 
-    //check if input is valid
+    //check if the keyword valid, if yes navigate to the results page
     if (!APP.input) {
       alert("Empty input, please try it again.");
     } else {
-      let searchResult = APP.createTransaction("searchResults");
-      let searchStore = searchResult.objectStore("searchResults");
-      let getResult = searchStore.get(APP.input);
-
-      getResult.onsuccess = (ev) => {
-        //check the db for matches
-        if (ev.target.result === undefined) {
-          //do a fetch call for search results
-          console.log("Fetching results from API.");
-          APP.getData(APP.input);
-          APP.displayCards(APP.results);
-        } else {
-          //save results to db
-          //navigate to url
-          console.log("Results already in the db, the results are from db");
-          APP.getDBResults("searchResults", APP.input);
-          APP.displayCards(APP.results);
-        }
-      };
+      APP.navigate(`/results.html?keyword=${APP.input}`);
     }
   },
 
@@ -238,8 +220,9 @@ const APP = {
 
   navigate: (url) => {
     //change the current page
+
     window.location = url; //this should include the querystring
   },
 };
 
-APP.init();
+document.addEventListener("DOMContentLoaded", APP.init);
