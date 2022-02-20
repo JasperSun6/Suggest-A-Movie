@@ -1,4 +1,4 @@
-const version = 1;
+const version = 2;
 let isOnline = true;
 const staticCache = `pwaAssignStaticCache${version}`;
 const dynamicCache = `pwaAssignDynamicCache${version}`;
@@ -19,6 +19,7 @@ const cacheList = [
   "./img/favicon-16x16.png",
   "./img/favicon-32x32.png",
   "./img/mstile-150x150.png",
+  "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
   "https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap",
 ];
 

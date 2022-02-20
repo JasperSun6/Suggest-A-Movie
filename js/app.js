@@ -34,8 +34,8 @@ const APP = {
   openDatabase: (nextStep) => {
     //open the database
     let version = 1;
-
     let dbOpenRequest = indexedDB.open("movieDB", version);
+
     //add the update, error, success listeners in here
     dbOpenRequest.onupgradeneeded = function (ev) {
       APP.DB = ev.target.result;
@@ -59,6 +59,7 @@ const APP = {
         autoIncrement: false,
       });
     };
+
     //call nextStep onsuccess
     dbOpenRequest.onsuccess = function (ev) {
       APP.DB = dbOpenRequest.result;
@@ -69,21 +70,27 @@ const APP = {
   },
 
   createTransaction: (storeName) => {
-    let tx;
     //create a transaction to use for some interaction with the database
-    tx = APP.DB.transaction(storeName, "readwrite");
+    let tx = APP.DB.transaction(storeName, "readwrite");
     return tx;
   },
 
   getDBResults: (storeName, keyValue) => {
     //return the results from storeName where it matches keyValue
+    let tx = APP.DB.transaction(storeName);
+    let db = tx.objectStore(storeName);
+    let dbResult = db.get(keyValue);
+
+    dbResult.onsuccess = function (ev) {
+      let results = ev.target.result;
+      APP.results = results;
+    };
   },
 
   addResultsToDB: (obj, storeName) => {
     //pass in the name of the store
     //save the obj passed in to the appropriate store
-    let tx;
-    tx = APP.createTransaction(storeName);
+    let tx = APP.createTransaction(storeName);
     let newStore = tx.objectStore(storeName);
 
     let newMoviesObj = {
@@ -95,13 +102,8 @@ const APP = {
   },
 
   addListeners: () => {
-    //add listeners
     let btnSearch = document.getElementById("btnSearch");
     btnSearch.addEventListener("click", APP.searchFormSubmitted);
-    //when the search form is submitted
-    //when clicking on the list of possible searches on home or 404 page
-    //when a message is received
-    //when online and offline
 
     window.addEventListener("online", APP.changeStatus);
     window.addEventListener("offline", APP.changeStatus);
@@ -129,35 +131,32 @@ const APP = {
     //when the browser goes online or offline
   },
 
-  messageReceived: (ev) => {
-    //ev.data
-  },
-
-  sendMessage: (msg) => {
-    //send a message to the service worker
-  },
-
   searchFormSubmitted: (ev) => {
     ev.preventDefault();
-    //get the keyword from teh input
-    APP.input = document.getElementById("search").value;
+    //get the keyword from the input
+    APP.input = document.getElementById("search").value.toLowerCase();
 
-    //make sure it is not empty
+    //check if input is valid
     if (!APP.input) {
       alert("Empty input, please try it again.");
     } else {
       let searchResult = APP.createTransaction("searchResults");
       let searchStore = searchResult.objectStore("searchResults");
       let getResult = searchStore.get(APP.input);
+
       getResult.onsuccess = (ev) => {
         //check the db for matches
         if (ev.target.result === undefined) {
           //do a fetch call for search results
+          console.log("Fetching results from API.");
           APP.getData(APP.input);
+          APP.displayCards(APP.results);
         } else {
           //save results to db
           //navigate to url
-          console.log("Results already in the Database");
+          console.log("Results already in the db, the results are from db");
+          APP.getDBResults("searchResults", APP.input);
+          APP.displayCards(APP.results);
         }
       };
     }
@@ -175,7 +174,6 @@ const APP = {
 
   getData: (endpoint) => {
     //do a fetch call to the endpoint
-
     let url = `${APP.tmdbBASEURL}search/movie?api_key=${APP.tmdbAPIKEY}&query=${endpoint}`;
 
     fetch(url)
@@ -194,9 +192,7 @@ const APP = {
         //remove the properties we don't need
         let results = contents.results;
         APP.results = results;
-
         APP.addResultsToDB(APP.results, "searchResults");
-        console.log(APP.results);
       })
       .catch((err) => {
         //handle the NetworkError
@@ -204,24 +200,40 @@ const APP = {
       });
   },
 
-  getSearchResults: (keyword) => {
-    //check if online
-    //check in DB for match of keyword in searchStore
-    //if no match in DB do a fetch
-    // APP.displayCards is the callback
-  },
-
-  getSuggestedResults: (movieid) => {
-    //check if online
-    //check in DB for match of movieid in suggestStore
-    //if no match in DB do a fetch
-    // APP.displayCards is the callback
-  },
-
-  displayCards: () => {
+  displayCards: (movies) => {
     //display all the movie cards based on the results array
-    // in APP.results
-    //these results could be from the database or from a fetch
+    let image;
+    let ol = document.getElementById("ol");
+
+    movies.forEach((movie) => {
+      // check if the poster exist or not
+      if (movie.poster_path === null) {
+        image = "./img/imageNotFound.png";
+      } else {
+        image = `${APP.tmdbIMAGEBASEURL}${movie.poster_path}`;
+      }
+
+      // check if the overview exist or not
+      if (movie.overview === "") {
+        movie.overview = "Sorry, this movie has no description available.";
+      } else {
+        movie.overview = `${movie.overview}`;
+      }
+
+      // build movie cards
+      let li = document.createElement("li");
+      li.innerHTML = `
+      <div class="card card-sizing">
+      <img src="${image}" class="card-img-top" alt="${movie.title}">
+      <div class="card-body d-flex flex-column">
+      <h5 class="card-title">${movie.title}</h5>
+      <p class="card-text">Release Date:<br>${movie.release_date}</p> 
+      <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
+      </div>
+      </div>`;
+
+      ol.append(li);
+    });
   },
 
   navigate: (url) => {
@@ -230,4 +242,4 @@ const APP = {
   },
 };
 
-document.addEventListener("DOMContentLoaded", APP.init);
+APP.init();
