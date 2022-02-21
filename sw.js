@@ -59,7 +59,7 @@ self.addEventListener("fetch", (ev) => {
         cacheRes ||
         fetch(ev.request)
           .then((fetchRes) => {
-            if (!fetchRes.ok) throw new Error(fetchRes.staticText);
+            // if (!fetchRes.ok) throw new Error(fetchRes.staticText);
             return caches.open(dynamicCache).then((cache) => {
               let copy = fetchRes.clone();
               cache.put(ev.request, copy);
@@ -97,7 +97,7 @@ function sendMessage(msg) {
 
 function limitCache() {
   //remove some files from the dynamic cache
-  const limitCacheSize = (nm, size = 25) => {
+  const limitCacheSize = (nm, size = 30) => {
     caches.open(nm).then((cache) => {
       cache.keys().then((keys) => {
         if (keys.length > size) {

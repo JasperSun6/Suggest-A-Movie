@@ -1,0 +1,35 @@
+// //check if input is valid
+
+// } else {
+//   let searchResult = APP.createTransaction("searchResults");
+//   let searchStore = searchResult.objectStore("searchResults");
+//   let getResult = searchStore.get(APP.input);
+
+//   getResult.onsuccess = (ev) => {
+//     //check the db for matches
+//     if (ev.target.result === undefined) {
+//       //do a fetch call for search results
+//       console.log("Fetching results from API.");
+//       APP.getData(APP.input);
+//       APP.displayCards(APP.results);
+//     } else {
+//       //save results to db
+//       //navigate to url
+//       console.log("Results already in the db, the results are from db");
+//       APP.getDBResults("searchResults", APP.input);
+//       APP.displayCards(APP.results);
+//     }
+//   };
+// }
+
+// getDBResults: (storeName, keyValue) => {
+//     //return the results from storeName where it matches keyValue
+//     let tx = APP.DB.transaction(storeName);
+//     let db = tx.objectStore(storeName);
+//     let dbResult = db.get(keyValue);
+
+//     dbResult.onsuccess = function (ev) {
+//       let results = ev.target.result;
+//       APP.results = results;
+//     };
+//   },
