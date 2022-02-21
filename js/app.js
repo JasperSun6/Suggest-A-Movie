@@ -126,20 +126,11 @@ const APP = {
       let url = new URL(document.location).searchParams;
       APP.input = url.get("keyword");
       APP.getSearchResults(APP.input);
-      //listener for clicking on the movie card container
-      // let movieCard = document.querySelector("card");
-      // console.log(movieCard);
-      // movieCard.addEventListener("click", APP.cardListClicked);
     }
 
     if (document.body.id === "suggest") {
       //on the suggest page
       console.log("on the suggest page");
-
-      //listener for clicking on the movie card container
-      // let movieCard = document.querySelector(".card");
-      // console.log(movieCard);
-      // movieCard.addEventListener("click", APP.cardListClicked);
     }
     if (document.body.id === "fourohfour") {
       //on the 404 page
@@ -188,12 +179,17 @@ const APP = {
     if (!APP.input) {
       alert("Empty input, please try it again.");
     } else {
-      APP.navigate(`/results.html?keyword=${APP.input}`);
+      if (!APP.isOnline) {
+        APP.navigate("/404.html");
+      } else {
+        APP.navigate(`/results.html?keyword=${APP.input}`);
+      }
     }
   },
 
-  getData: (endpoint) => {
+  getData: (endpoint, storeName) => {
     let url;
+
     if (isNaN(endpoint)) {
       //build the url with keyword
       url = `${APP.tmdbBASEURL}search/movie?api_key=${APP.tmdbAPIKEY}&query=${endpoint}`;
@@ -265,10 +261,9 @@ const APP = {
     let search = document.getElementById("searchKey");
     search.textContent = `You were searching for ${APP.input}`;
 
-    console.log(movies);
     movies.forEach((movie) => {
       let li = document.createElement("li");
-
+      li.addEventListener("click", APP.cardListClicked);
       // check if the poster exist or not
       if (movie.poster_path === null) {
         image = "./img/imageNotFound.png";
@@ -294,7 +289,6 @@ const APP = {
       <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
       </div>
       </div>`;
-
       ol.append(li);
     });
   },

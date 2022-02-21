@@ -59,7 +59,7 @@ self.addEventListener("fetch", (ev) => {
         cacheRes ||
         fetch(ev.request)
           .then((fetchRes) => {
-            // if (!fetchRes.ok) throw new Error(fetchRes.staticText);
+            if (fetchRes.status > 399) throw new Error(fetchRes.staticText);
             return caches.open(dynamicCache).then((cache) => {
               let copy = fetchRes.clone();
               cache.put(ev.request, copy);
@@ -97,12 +97,12 @@ function sendMessage(msg) {
 
 function limitCache() {
   //remove some files from the dynamic cache
-  const limitCacheSize = (nm, size = 30) => {
-    caches.open(nm).then((cache) => {
+  const limitCacheSize = (dynamicCache, size = 30) => {
+    caches.open(dynamicCache).then((cache) => {
       cache.keys().then((keys) => {
         if (keys.length > size) {
           cache.delete(keys[0]).then(() => {
-            limitCacheSize(nm, size);
+            limitCacheSize(dynamicCache, size);
           });
         }
       });
@@ -114,4 +114,10 @@ function checkForConnection() {
   //try to talk to a server and do a fetch() with HEAD method.
   //to see if we are really online or offline
   //send a message back to the browser
+  self.clients.matchAll().then(function (clients) {
+    if (clients && clients.length) {
+      //Respond to last focused tab
+      clients[0].postMessage(msg);
+    }
+  });
 }
