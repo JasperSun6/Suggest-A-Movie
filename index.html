@@ -45,6 +45,7 @@
             </g>
         </svg>
         <h1>Suggest A Movie</h1>
+        <p>You are <span class="isonline"></span>online!</p>
         <section class="container">
             <form>
                 <input class="form-control" type="search" id="search" value="" placeholder="Search a movie" />
@@ -57,7 +58,7 @@
     <main>
         <section id="instructions" class="container">
             <h2>How to Start</h2>
-            <div class="content">
+            <div>
                 <p>
                     Enter an movie name in the search box at the top of the screen and
                     click on the search icon.
@@ -70,10 +71,14 @@
                     Clicking on a movie card will load a list of suggested movies based on the previous movie.
                 </p>
             </div>
+            <h2>Search History</h2>
+            <div>
+                <ul id="ul"></ul>
+            </div>
         </section>
 
         <section class="container">
-            <ol id="ol" class="content row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 d-flex align-items-stretch"></ol>
+
         </section>
 
     </main>

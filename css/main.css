@@ -50,6 +50,10 @@ header form {
   align-items: center;
 }
 
+.isonline {
+  color: red;
+}
+
 .form-button {
   display: flex;
   flex-direction: row;
@@ -85,11 +89,17 @@ svg {
 }
 
 #instructions,
-h2 {
+h2,
+h3 {
   margin-top: 1rem;
   font-weight: 400;
   text-align: center;
   color: #142d33;
+}
+
+.backTohome {
+  text-align: center;
+  font-size: 1.5rem;
 }
 
 #ol {
@@ -105,7 +115,6 @@ li {
 
 img {
   height: 15rem;
-  width: 100%;
 }
 
 .card {
@@ -151,7 +160,7 @@ img {
 }
 
 .card-title {
-  font-size: 1rem;
+  font-size: 0.8rem;
 }
 
 .card-text {
