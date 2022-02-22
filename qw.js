@@ -15,7 +15,6 @@ const APP = {
     //register the service worker after the DB is open
     APP.openDatabase(APP.registerSW);
     APP.changeDisplay();
-    setTimeout(APP.checkNavCount, 10000);
     console.log("init function called");
   },
 
@@ -112,18 +111,6 @@ const APP = {
 
     window.addEventListener("online", APP.changeStatus);
     window.addEventListener("offline", APP.changeStatus);
-
-    if (navigator.standalone) {
-      console.log("Launched: Installed (iOS)");
-      APP.isStandalone = true;
-    } else if (matchMedia("(display-mode: standalone)").matches) {
-      console.log("Launched: Installed");
-      APP.isStandalone = true;
-    } else {
-      // console.log('Launched: Browser Tab');
-      APP.isStandalone = false;
-    }
-    window.addEventListener("pageshow", APP.updateNavCount);
   },
 
   pageSpecific: () => {
@@ -135,8 +122,8 @@ const APP = {
 
       case "results":
         console.log("on the results page");
-        let searchUrl = new URL(document.location).searchParams;
-        APP.input = searchUrl.get("keyword");
+
+        APP.input = APP.param.get("keyword");
         APP.getSearchResults(APP.input);
         let search = document.getElementById("searchKey");
         search.textContent = `You were searching for "${APP.input}"`;
@@ -144,7 +131,6 @@ const APP = {
 
       case "suggest":
         console.log("on the suggest page");
-
         APP.title = APP.param.get("title");
         APP.checkDBResults("suggestResults", APP.title);
 
@@ -161,11 +147,16 @@ const APP = {
 
   cardListClicked: (ev) => {
     //user clicked on a movie card
+    //get the title and movie id
+    //check the db for matches
+    //do a fetch for the suggest results
+    //save results to db
+    //build a url
+    //navigate to the suggest page
     console.log("card is clicked");
     let div = ev.target.closest(".card");
-    APP.title = div.title;
-    APP.id = div.id;
-    APP.navigate(`/suggest.html?id=${div.id}&title=${APP.title}`);
+    // APP.title = div.title;
+    APP.navigate(`/suggest.html?id=${div.id}&title=${div.title}`);
   },
 
   changeStatus: (ev) => {
@@ -189,18 +180,6 @@ const APP = {
     }
   },
 
-  gotMessage: (ev) => {
-    //received message from service worker
-    console.log(ev.data);
-  },
-
-  sendMessage: (msg) => {
-    //send messages to the service worker
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.active.postMessage(msg);
-    });
-  },
-
   searchFormSubmitted: (ev) => {
     console.log("search form submitted");
     ev.preventDefault();
@@ -221,8 +200,8 @@ const APP = {
       //build the url with keyword
       url = `${APP.tmdbBASEURL}search/movie?api_key=${APP.tmdbAPIKEY}&query=${endpoint}`;
     } else {
-      APP.id = APP.param.get("id");
-      url = `${APP.tmdbBASEURL}movie/${APP.id}/recommendations?api_key=${APP.tmdbAPIKEY}&language=en-US&page=1`;
+      //build the url with movie id
+      url = `${APP.tmdbBASEURL}movie/${endpoint}/recommendations?api_key=${APP.tmdbAPIKEY}`;
     }
 
     fetch(url)
@@ -312,14 +291,14 @@ const APP = {
 
       // build movie cards
       li.innerHTML = `
-      <div class="card" id="${movie.id}" title="${movie.title}">
-      <img src="${image}" class="card-img-top" alt="${movie.title}">
-      <div class="card-body d-flex flex-column">
-      <h5 class="card-title">${movie.title}</h5>
-      <p class="card-text">Release Date:<br>${movie.release_date}</p> 
-      <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
-      </div>
-      </div>`;
+        <div class="card" id="${movie.id}" title="${movie.title}">
+        <img src="${image}" class="card-img-top" alt="${movie.title}">
+        <div class="card-body d-flex flex-column">
+        <h5 class="card-title">${movie.title}</h5>
+        <p class="card-text">Release Date:<br>${movie.release_date}</p> 
+        <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
+        </div>
+        </div>`;
       ol.append(li);
 
       li.addEventListener("click", APP.cardListClicked);
@@ -329,62 +308,6 @@ const APP = {
   navigate: (url) => {
     //change the current page
     window.location = url; //this should include the querystring
-  },
-
-  updateNavCount: (ev) => {
-    //TODO: when the app loads check to see if the sessionStorage key exists
-    // if the number exists then increment by 1.
-    // triggered by the pageshow event
-    //console.log(ev);
-    //don't need to do this if the app is already installed...
-    if (!APP.isStandalone) {
-      APP.navCount = 0;
-      let storage = sessionStorage.getItem("exercise3NavCount");
-      if (storage) {
-        APP.navCount = Number(storage) + 1;
-      } else {
-        APP.navCount = 1;
-      }
-      sessionStorage.setItem("exercise3NavCount", APP.navCount);
-    }
-  },
-
-  checkNavCount: () => {
-    //page has just loaded if the count is high enough then show the prompt
-    let storage = sessionStorage.getItem("exercise3NavCount");
-    if (storage) {
-      APP.navCount = Number(storage);
-      if (APP.navCount > 2) {
-        console.log("show the prompt"); //only works on user interaction
-        document.body.addEventListener(
-          "click",
-          () => {
-            if (APP.deferredPrompt) {
-              APP.deferredPrompt.prompt();
-              APP.deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === "accepted") {
-                  //user says yes
-                  console.log("User accepted the install prompt");
-                  APP.deferredPrompt = null; //we will not need it again.
-                  //and clear out sessionStorage
-                  sessionStorage.clear();
-                } else {
-                  //user says not now
-                  console.log("User dismissed the install prompt");
-                }
-              });
-            } else {
-              window.addEventListener("beforeinstallprompt", (ev) => {
-                console.log("beforeinstallprompt");
-                ev.preventDefault();
-                APP.deferredPrompt = ev;
-              });
-            }
-          },
-          { once: true }
-        );
-      }
-    }
   },
 };
 

@@ -1,4 +1,4 @@
-const version = 2;
+const version = 1;
 let isOnline = true;
 const staticCache = `pwaAssignStaticCache${version}`;
 const dynamicCache = `pwaAssignDynamicCache${version}`;
@@ -63,6 +63,7 @@ self.addEventListener("fetch", (ev) => {
             return caches.open(dynamicCache).then((cache) => {
               let copy = fetchRes.clone();
               cache.put(ev.request, copy);
+              limitCacheSize(dynamicCache, 30);
               return fetchRes;
             });
           })
@@ -95,19 +96,16 @@ function sendMessage(msg) {
   });
 }
 
-function limitCache() {
-  //remove some files from the dynamic cache
-  const limitCacheSize = (dynamicCache, size = 30) => {
-    caches.open(dynamicCache).then((cache) => {
-      cache.keys().then((keys) => {
-        if (keys.length > size) {
-          cache.delete(keys[0]).then(() => {
-            limitCacheSize(dynamicCache, size);
-          });
-        }
-      });
+function limitCacheSize(nm, size = 30) {
+  caches.open(nm).then((cache) => {
+    cache.keys().then((keys) => {
+      if (keys.length > size) {
+        cache.delete(keys[keys.length - 1]).then(() => {
+          limitCacheSize(nm, size);
+        });
+      }
     });
-  };
+  });
 }
 
 function checkForConnection() {
