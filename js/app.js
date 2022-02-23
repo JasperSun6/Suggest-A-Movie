@@ -1,6 +1,8 @@
 const APP = {
   DB: null, //the indexedDB
   sw: null,
+  navCount: null,
+  deferredPrompt: null,
   input: "",
   id: "",
   title: "",
@@ -309,7 +311,6 @@ const APP = {
       } else {
         movie.release_date = `${movie.release_date}`;
       }
-
       // build movie cards
       li.innerHTML = `
       <div class="card" id="${movie.id}" title="${movie.title}">
@@ -339,19 +340,19 @@ const APP = {
     //don't need to do this if the app is already installed...
     if (!APP.isStandalone) {
       APP.navCount = 0;
-      let storage = sessionStorage.getItem("exercise3NavCount");
+      let storage = sessionStorage.getItem("assignment1navCount");
       if (storage) {
         APP.navCount = Number(storage) + 1;
       } else {
         APP.navCount = 1;
       }
-      sessionStorage.setItem("exercise3NavCount", APP.navCount);
+      sessionStorage.setItem("assignment1navCount", APP.navCount);
     }
   },
 
   checkNavCount: () => {
     //page has just loaded if the count is high enough then show the prompt
-    let storage = sessionStorage.getItem("exercise3NavCount");
+    let storage = sessionStorage.getItem("assignment1navCount");
     if (storage) {
       APP.navCount = Number(storage);
       if (APP.navCount > 2) {
