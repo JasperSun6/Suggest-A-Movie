@@ -15,6 +15,7 @@ html {
 body {
   min-height: 100vh;
   background-color: #a4b9d3;
+  padding-top: 17rem;
 }
 
 /*******************
@@ -31,7 +32,10 @@ header {
   font-size: 2rem;
   padding: 1rem 0;
   align-items: center;
-  position: relative;
+  position: fixed;
+  z-index: 1;
+  top: 0;
+  width: 100%;
 }
 
 header h1,
@@ -117,7 +121,8 @@ h3 {
   margin-top: 1rem;
 }
 
-#ol {
+#ol,
+#history {
   list-style-type: none;
   margin-top: 1rem;
   margin-bottom: 0;
@@ -159,10 +164,10 @@ li {
 
 .card-body {
   padding-bottom: 0;
+  flex: 1 1 19rem;
 }
 
 .card-sizing {
-  display: flex;
   flex-wrap: wrap;
 }
 

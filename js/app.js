@@ -11,7 +11,7 @@ const APP = {
   isOnline: "onLine" in navigator && navigator.onLine,
   tmdbBASEURL: "https://api.themoviedb.org/3/",
   tmdbAPIKEY: "527917a705e7338ceca3903f95d79899",
-  tmdbIMAGEBASEURL: "http://image.tmdb.org/t/p/w500",
+  tmdbIMAGEBASEURL: "https://image.tmdb.org/t/p/w500",
   param: new URL(document.location).searchParams,
   init: () => {
     //open the database
@@ -109,7 +109,6 @@ const APP = {
   },
 
   addListeners: () => {
-    console.warn("adding listeners");
     let btnSearch = document.getElementById("btnSearch");
     btnSearch.addEventListener("click", APP.searchFormSubmitted);
 
@@ -305,7 +304,7 @@ const APP = {
 
       APP.searchHistories.forEach((search) => {
         let li = document.createElement("li");
-        li.innerHTML = `${search}`;
+        li.innerHTML = `${search.charAt(0).toUpperCase() + search.slice(1)}`;
 
         ol.append(li);
       });
@@ -333,9 +332,9 @@ const APP = {
       }
       // build movie cards
       li.innerHTML = `
-      <div class="card card-sizing" id="${movie.id}" title="${movie.title}">
+      <div class="card" id="${movie.id}" title="${movie.title}">
       <img src="${image}" class="card-img-top" alt="${movie.title}">
-      <div class="card-body d-flex flex-column">
+      <div class="card-body col d-flex flex-column">
       <h5 class="card-title">${movie.title}</h5>
       <p class="card-text">Release Date:<br>${movie.release_date}</p> 
       <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
