@@ -7,6 +7,7 @@ const APP = {
   id: "",
   title: "",
   results: [],
+  searchHistories: [],
   isOnline: "onLine" in navigator && navigator.onLine,
   tmdbBASEURL: "https://api.themoviedb.org/3/",
   tmdbAPIKEY: "527917a705e7338ceca3903f95d79899",
@@ -133,6 +134,7 @@ const APP = {
     switch (document.body.id) {
       case "home":
         console.log("on the home page");
+        APP.getSearchHistories("searchResults");
         break;
 
       case "results":
@@ -156,7 +158,7 @@ const APP = {
 
       case "fourohfour":
         console.log("on the 404 page");
-        // location.href = "/404.html";
+        APP.getSearchHistories("searchResults");
         break;
     }
   },
@@ -292,6 +294,24 @@ const APP = {
     }
   },
 
+  getSearchHistories: (storeName) => {
+    let tx = APP.createTransaction(storeName);
+    let newStore = tx.objectStore(storeName);
+    let moviesObj = newStore.getAllKeys();
+
+    moviesObj.onsuccess = function (ev) {
+      APP.searchHistories = ev.target.result;
+      let ol = document.getElementById("history");
+
+      APP.searchHistories.forEach((search) => {
+        let li = document.createElement("li");
+        li.innerHTML = `${search}`;
+
+        ol.append(li);
+      });
+    };
+  },
+
   displayCards: (movies) => {
     //display all the movie cards based on the results array
     let image;
@@ -313,7 +333,7 @@ const APP = {
       }
       // build movie cards
       li.innerHTML = `
-      <div class="card" id="${movie.id}" title="${movie.title}">
+      <div class="card card-sizing" id="${movie.id}" title="${movie.title}">
       <img src="${image}" class="card-img-top" alt="${movie.title}">
       <div class="card-body d-flex flex-column">
       <h5 class="card-title">${movie.title}</h5>
