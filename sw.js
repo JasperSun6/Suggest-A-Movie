@@ -1,7 +1,9 @@
 const version = 1;
 let isOnline = "onLine" in navigator && navigator.onLine;
+const limitCache = 40;
 const staticCache = `pwaAssignStaticCache${version}`;
 const dynamicCache = `pwaAssignDynamicCache${version}`;
+const imageCache = `pwaAssignImageCache${version}`;
 const cacheList = [
   "/",
   "/index.html",
@@ -60,12 +62,24 @@ self.addEventListener("fetch", (ev) => {
         fetch(ev.request)
           .then((fetchRes) => {
             if (fetchRes.status > 399) throw new Error(fetchRes.staticText);
-            return caches.open(dynamicCache).then((cache) => {
-              let copy = fetchRes.clone();
-              cache.put(ev.request, copy);
-              limitCacheSize(dynamicCache);
-              return fetchRes;
-            });
+            if (fetchRes.type === "opaque") {
+              return caches.open(imageCache).then((cache) => {
+                let copy = fetchRes.clone();
+                cache.put(ev.request, copy);
+                cache.keys().then((key) => {
+                  if (key.length > limitCache) {
+                    limitCacheSize(imageCache);
+                  }
+                });
+                return fetchRes;
+              });
+            } else {
+              return caches.open(dynamicCache).then((cache) => {
+                let copy = fetchRes.clone();
+                cache.put(ev.request, copy);
+                return fetchRes;
+              });
+            }
           })
           .catch((err) => {
             console.log("SW fetch failed");
@@ -96,7 +110,7 @@ function sendMessage(msg) {
   });
 }
 
-function limitCacheSize(nm, size = 29) {
+function limitCacheSize(nm, size = 40) {
   caches.open(nm).then((cache) => {
     cache.keys().then((keys) => {
       if (keys.length > size) {
