@@ -1,5 +1,5 @@
 const version = 1;
-let isOnline = true;
+let isOnline = "onLine" in navigator && navigator.onLine;
 const staticCache = `pwaAssignStaticCache${version}`;
 const dynamicCache = `pwaAssignDynamicCache${version}`;
 const cacheList = [
@@ -63,7 +63,7 @@ self.addEventListener("fetch", (ev) => {
             return caches.open(dynamicCache).then((cache) => {
               let copy = fetchRes.clone();
               cache.put(ev.request, copy);
-              limitCacheSize(dynamicCache, 30);
+              limitCacheSize(dynamicCache);
               return fetchRes;
             });
           })
@@ -96,7 +96,7 @@ function sendMessage(msg) {
   });
 }
 
-function limitCacheSize(nm, size = 30) {
+function limitCacheSize(nm, size = 29) {
   caches.open(nm).then((cache) => {
     cache.keys().then((keys) => {
       if (keys.length > size) {

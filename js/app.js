@@ -355,9 +355,9 @@ const APP = {
     let storage = sessionStorage.getItem("assignment1navCount");
     if (storage) {
       APP.navCount = Number(storage);
-      if (APP.navCount > 2) {
+      if (APP.navCount > 3) {
         console.log("show the prompt"); //only works on user interaction
-        document.body.addEventListener(
+        document.body.id.addEventListener(
           "click",
           () => {
             if (APP.deferredPrompt) {

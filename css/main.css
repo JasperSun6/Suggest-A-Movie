@@ -51,6 +51,10 @@ header form {
   align-items: center;
 }
 
+.logo {
+  text-align: center;
+}
+
 .isonline {
   color: #dbdfe3;
   font-size: 0.8rem;
