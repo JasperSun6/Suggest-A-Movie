@@ -21,8 +21,9 @@ const cacheList = [
   "./img/favicon-16x16.png",
   "./img/favicon-32x32.png",
   "./img/mstile-150x150.png",
+  "./img/sadDog.png",
   "https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css",
-  "https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap",
+  "https://fonts.googleapis.com/css2?family=Ubuntu:ital@1&display=swap",
 ];
 
 self.addEventListener("install", (ev) => {

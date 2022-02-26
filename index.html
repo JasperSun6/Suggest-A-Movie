@@ -56,7 +56,7 @@
         <p class="isonline"> </p>
         <section class="container">
             <form>
-                <input class="form-control" type="search" id="search" value="" placeholder="Search a movie" />
+                <input class="form-control search" type="search" value="" placeholder="Search a movie" />
                 <div class="form-button">
                     <button class="btn btn-info" id="btnSearch">Search</button>
                 </div>
@@ -64,24 +64,27 @@
         </section>
     </header>
     <main>
-        <section id="instructions" class="container">
+        <section class="instructions container">
             <h2>How to Start</h2>
             <div>
                 <p>
-                    Enter an movie name in the search box at the top of the screen and
-                    click on the search icon.
+                    Enter a movie name in the search box at the top of the screen and click on the search button.
                 </p>
                 <p>
-                    You will be shown a list of movies which name matches what you
-                    typed.
+                    You will be shown a list of movies whose name matches what you typed.
                 </p>
                 <p>
                     Clicking on a movie card will load a list of suggested movies based on the previous movie.
                 </p>
+                <p>
+                    You can click the search history to navigate to see the movies you searched for earlier.
+                </p>
             </div>
+        </section>
+        <section class="searchHistory" class="container">
             <h3>Search History</h3>
             <div>
-                <ol id="history"></ol>
+                <ol class="history"></ol>
             </div>
         </section>
     </main>

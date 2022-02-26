@@ -57,8 +57,7 @@
         <p class="isonline"> </p>
         <section class="container">
             <form>
-                <input class="form-control me-2" type="search" id="search" value=""
-                    placeholder="Search another movie" />
+                <input class="form-control search" type="search" value="" placeholder="Search another movie" />
                 <div class="form-button">
                     <button class="btn btn-info" id="btnSearch">Search</button>
                 </div>
@@ -67,8 +66,9 @@
     </header>
     <main>
         <section class="container">
-            <p id="suggestKey"></p>
-            <ol id="ol" class="content row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 d-flex align-items-stretch"></ol>
+            <p class="suggestKey"></p>
+            <ol class="ol content row row-cols-sm-2 row-cols-md-3 row-cols-lg-4 d-flex align-items-stretch">
+            </ol>
         </section>
     </main>
     <script src="./js/app.js"></script>

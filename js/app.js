@@ -17,7 +17,6 @@ const APP = {
     //open the database
     //register the service worker after the DB is open
     APP.openDatabase(APP.registerSW);
-    APP.changeDisplay();
     setTimeout(APP.checkNavCount, 10000);
     console.log("init function called");
   },
@@ -141,7 +140,7 @@ const APP = {
         let searchUrl = new URL(document.location).searchParams;
         APP.input = searchUrl.get("keyword");
         APP.getSearchResults(APP.input);
-        let search = document.getElementById("searchKey");
+        let search = document.querySelector(".searchKey");
         search.textContent = `You were searching for "${APP.input}"`;
         break;
 
@@ -151,12 +150,13 @@ const APP = {
         APP.title = APP.param.get("title");
         APP.checkDBResults("suggestResults", APP.title);
 
-        let suggest = document.getElementById("suggestKey");
+        let suggest = document.querySelector(".suggestKey");
         suggest.textContent = `Similar Movies to movie "${APP.title}"`;
         break;
 
       case "fourohfour":
         console.log("on the 404 page");
+        window.history.pushState("404", "Suggest A Movie | 404", "/404.html");
         APP.getSearchHistories("searchResults");
         break;
     }
@@ -171,25 +171,10 @@ const APP = {
     APP.navigate(`/suggest.html?id=${div.id}&title=${APP.title}`);
   },
 
-  changeStatus: (ev) => {
-    // Jet Brains Mono
-    //toggling between online and offline
-    APP.isOnline = ev.type === "online" ? true : false;
-    //TODO: send message to sw about being online or offline
-    navigator.serviceWorker.ready.then((registration) => {
-      registration.active.postMessage({ ONLINE: APP.isOnline });
-    });
-    APP.changeDisplay();
-  },
-
-  changeDisplay: () => {
-    if (APP.isOnline) {
-      //online
-      document.querySelector(".isonline").textContent = "Online";
-    } else {
-      //offline
-      document.querySelector(".isonline").textContent = " Offline ";
-    }
+  historyListClicked: (ev) => {
+    console.log("history search list is clicked");
+    APP.input = ev.target.closest(".historyKey").textContent;
+    APP.navigate(`/results.html?keyword=${APP.input.toLowerCase()}`);
   },
 
   gotMessage: (ev) => {
@@ -208,7 +193,7 @@ const APP = {
     console.log("search form submitted");
     ev.preventDefault();
     //get the keyword from the input
-    APP.input = document.getElementById("search").value.toLowerCase();
+    APP.input = document.querySelector(".search").value.toLowerCase();
     //check if the keyword valid, if yes navigate to the results page
     if (!APP.input) {
       alert("Empty input, please try it again.");
@@ -300,13 +285,16 @@ const APP = {
 
     moviesObj.onsuccess = function (ev) {
       APP.searchHistories = ev.target.result;
-      let ol = document.getElementById("history");
+      let ol = document.querySelector(".history");
 
       APP.searchHistories.forEach((search) => {
         let li = document.createElement("li");
+        li.classList.add("historyKey");
         li.innerHTML = `${search.charAt(0).toUpperCase() + search.slice(1)}`;
 
         ol.append(li);
+
+        li.addEventListener("click", APP.historyListClicked);
       });
     };
   },
@@ -314,7 +302,7 @@ const APP = {
   displayCards: (movies) => {
     //display all the movie cards based on the results array
     let image;
-    let ol = document.getElementById("ol");
+    let ol = document.querySelector("ol");
 
     movies.forEach((movie) => {
       let li = document.createElement("li");
@@ -349,62 +337,6 @@ const APP = {
   navigate: (url) => {
     //change the current page
     window.location = url; //this should include the querystring
-  },
-
-  updateNavCount: (ev) => {
-    //TODO: when the app loads check to see if the sessionStorage key exists
-    // if the number exists then increment by 1.
-    // triggered by the pageshow event
-    //console.log(ev);
-    //don't need to do this if the app is already installed...
-    if (!APP.isStandalone) {
-      APP.navCount = 0;
-      let storage = sessionStorage.getItem("assignment1navCount");
-      if (storage) {
-        APP.navCount = Number(storage) + 1;
-      } else {
-        APP.navCount = 1;
-      }
-      sessionStorage.setItem("assignment1navCount", APP.navCount);
-    }
-  },
-
-  checkNavCount: () => {
-    //page has just loaded if the count is high enough then show the prompt
-    let storage = sessionStorage.getItem("assignment1navCount");
-    if (storage) {
-      APP.navCount = Number(storage);
-      if (APP.navCount > 3) {
-        console.log("show the prompt"); //only works on user interaction
-        document.body.id.addEventListener(
-          "click",
-          () => {
-            if (APP.deferredPrompt) {
-              APP.deferredPrompt.prompt();
-              APP.deferredPrompt.userChoice.then((choiceResult) => {
-                if (choiceResult.outcome === "accepted") {
-                  //user says yes
-                  console.log("User accepted the install prompt");
-                  APP.deferredPrompt = null; //we will not need it again.
-                  //and clear out sessionStorage
-                  sessionStorage.clear();
-                } else {
-                  //user says not now
-                  console.log("User dismissed the install prompt");
-                }
-              });
-            } else {
-              window.addEventListener("beforeinstallprompt", (ev) => {
-                console.log("beforeinstallprompt");
-                ev.preventDefault();
-                APP.deferredPrompt = ev;
-              });
-            }
-          },
-          { once: true }
-        );
-      }
-    }
   },
 };
 
