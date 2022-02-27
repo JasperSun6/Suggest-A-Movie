@@ -28,6 +28,7 @@ main {
 header {
   background-color: hsl(221, 37%, 38%);
   color: hsl(20, 40%, 100%);
+  width: 100vw;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -38,7 +39,6 @@ header {
   position: fixed;
   z-index: 1;
   top: 0;
-  width: 100%;
 }
 
 header h1 {
@@ -92,6 +92,10 @@ svg {
   align-items: center;
 }
 
+.hide {
+  display: none;
+}
+
 .instructions,
 .searchHistory,
 h2,
@@ -115,14 +119,14 @@ h3 {
   font-size: 1.5rem;
   text-decoration: underline;
   text-align: center;
-  color: #142d33;
+  color: #262626;
 }
 
 .searchKey,
 .suggestKey {
   font-size: 1.5rem;
   margin-top: 1rem;
-  color: #ffffff;
+  color: #262626;
 }
 
 .ol,
@@ -134,13 +138,12 @@ h3 {
 }
 
 li {
-  margin-bottom: 1rem;
-  padding: 0;
   cursor: pointer;
+  margin-bottom: 1rem;
 }
 
 .card {
-  color: #49575c;
+  color: #262626;
   cursor: pointer;
   animation: 1s ease slideUp;
   transition: 0.8s;
@@ -169,18 +172,14 @@ li {
   opacity: 0.8;
 }
 
-.card-body {
-  padding-bottom: 0;
-}
-
 .card-title {
-  font-size: 1.3rem;
+  font-size: 1.1rem;
 }
 
 .card-text {
   text-align: left;
   margin-bottom: 0.5rem;
-  font-size: 1.2rem;
+  font-size: 1rem;
 }
 
 @keyframes spin {
@@ -195,17 +194,33 @@ li {
 /************************
   Media Queries
 ************************/
-@media all and (min-width: 37.5rem) {
-  header {
+@media only screen and (min-width: 37.5rem) {
+  .instructions p {
     font-size: 1.2rem;
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+  }
+
+  .card-text {
+    font-size: 1.1rem;
   }
 }
 
-@media all and (min-width: 60rem) {
+@media only screen and (min-width: 60rem) {
   main {
-    padding-top: 20rem;
+    padding-top: 18rem;
   }
-  header {
-    font-size: 2rem;
+
+  .instructions p {
+    font-size: 1.3rem;
+  }
+  .card-title {
+    font-size: 1.3rem;
+  }
+
+  .card-text {
+    font-size: 1.2rem;
   }
 }

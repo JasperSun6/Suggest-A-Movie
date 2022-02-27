@@ -325,7 +325,7 @@ const APP = {
       }" title="${movie.title}">
       <img src="${image}" class="card-img-top h-100" alt="${movie.title}">
       <div class="card-body">
-      <h5 class="card-title">${movie.title}</h5>
+      <h4 class="card-title">${movie.title}</h4>
       <p class="card-text">Release Date:<br>${movie.release_date}</p> 
       <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
       </div>
