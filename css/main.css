@@ -12,13 +12,12 @@ html {
   font-family: "Ubuntu", sans-serif;
   font-weight: 300;
   line-height: 1.5;
-  overflow-x: hidden;
 }
 
 main {
   min-height: 100vh;
   background-color: #a4b9d3;
-  padding-top: 18rem;
+  padding-top: 12rem;
   font-family: "Ubuntu", sans-serif;
 }
 
@@ -32,10 +31,8 @@ header {
   width: 100vw;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
   min-height: 20vh;
-  font-size: 2rem;
-  padding: 1rem 0;
+  padding-top: 1rem;
   align-items: center;
   position: fixed;
   z-index: 1;
@@ -43,56 +40,32 @@ header {
 }
 
 header h1 {
-  padding: 1rem;
-  text-shadow: 4px 2px 2px #ff512f;
-  text-align: center;
+  padding: 1rem 0;
+  margin: 0;
+  text-shadow: 4px 2px 2px #348edc;
 }
 
-header form {
-  padding: 1rem;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.logo {
-  text-align: center;
-}
-
-.form-button {
+form {
+  padding-bottom: 1rem;
   display: flex;
   flex-direction: row;
-  margin-top: 1rem;
-  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
 }
 
 .search {
-  font-size: 1rem;
-  line-height: 2;
-  padding: 0.25rem 1rem;
   font-family: "Ubuntu", sans-serif;
-  font-weight: 300;
-  max-width: 100%;
-  border-radius: 0.5rem;
 }
 
 svg {
   width: 30rem;
-  max-width: 70%;
+  max-width: 80vw;
 }
 
 /*******************
   content area
 *******************/
-
-.header {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .hide {
   display: none;
 }
@@ -120,14 +93,13 @@ h3 {
   font-size: 1.5rem;
   text-decoration: underline;
   text-align: center;
-  color: #262626;
+  color: #343434;
 }
 
 .searchKey,
 .suggestKey {
   font-size: 1.5rem;
-  margin-top: 1rem;
-  color: #262626;
+  color: #343434;
 }
 
 .ol,
@@ -140,37 +112,27 @@ h3 {
 
 li {
   cursor: pointer;
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
 }
 
 .card {
-  color: #262626;
+  color: #343434;
   cursor: pointer;
-  animation: 1s ease slideUp;
-  transition: 0.8s;
+  animation: 1s ease slideIn;
 }
 
-@keyframes slideUp {
+.card:hover img {
+  opacity: 0.75;
+}
+
+@keyframes slideIn {
   from {
-    transform: translateX(200rem);
+    transform: translateY(100rem);
   }
 
   to {
-    transform: translateX(0rem);
+    transform: translateY(0rem);
   }
-}
-
-/* card hover */
-.card:hover {
-  color: #e65268;
-}
-
-/* card image hover */
-.card img {
-  transition: 0.5s;
-}
-.card:hover img {
-  opacity: 0.8;
 }
 
 .card-title {
@@ -184,19 +146,14 @@ li {
   font-size: 1rem;
 }
 
-@keyframes spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-
 /************************
   Media Queries
 ************************/
 @media only screen and (min-width: 37.5rem) {
+  svg {
+    width: 40rem;
+  }
+
   .instructions p {
     font-size: 1.2rem;
   }
@@ -211,8 +168,12 @@ li {
 }
 
 @media only screen and (min-width: 60rem) {
+  svg {
+    width: 45rem;
+  }
+
   main {
-    padding-top: 18rem;
+    padding-top: 15rem;
   }
 
   .instructions p {
