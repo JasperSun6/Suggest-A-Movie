@@ -323,9 +323,9 @@ const APP = {
       <div class="card d-flex align-items-stretch h-100" id="${
         movie.id
       }" title="${movie.title}">
-      <img src="${image}" class="card-img-top h-100" alt="${movie.title}">
+      <img src="${image}" class="card-img-top" alt="${movie.title}">
       <div class="card-body">
-      <h4 class="card-title">${movie.title}</h4>
+      <h2 class="card-title">${movie.title}</h2>
       <p class="card-text">Release Date:<br>${movie.release_date}</p> 
       <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
       </div>
