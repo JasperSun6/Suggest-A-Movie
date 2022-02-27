@@ -135,8 +135,11 @@ h3 {
 
 li {
   margin-bottom: 1rem;
-  height: 100%;
   padding: 0;
+  cursor: pointer;
+}
+
+.card {
   color: #49575c;
   cursor: pointer;
   animation: 1s ease slideUp;
@@ -168,11 +171,10 @@ li {
 
 .card-body {
   padding-bottom: 0;
-  flex: 1 1 19rem;
 }
 
 .card-title {
-  font-size: 1.5rem;
+  font-size: 1.3rem;
 }
 
 .card-text {

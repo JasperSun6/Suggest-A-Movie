@@ -320,9 +320,11 @@ const APP = {
       }
       // build movie cards
       li.innerHTML = `
-      <div class="card" id="${movie.id}" title="${movie.title}">
-      <img src="${image}" class="card-img-top" alt="${movie.title}">
-      <div class="card-body col d-flex flex-column">
+      <div class="card d-flex align-items-stretch h-100" id="${
+        movie.id
+      }" title="${movie.title}">
+      <img src="${image}" class="card-img-top h-100" alt="${movie.title}">
+      <div class="card-body">
       <h5 class="card-title">${movie.title}</h5>
       <p class="card-text">Release Date:<br>${movie.release_date}</p> 
       <p class="card-text">Popularity:<br>${movie.popularity.toFixed(2)}</p>
