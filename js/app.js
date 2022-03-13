@@ -25,7 +25,7 @@ const APP = {
     console.log("register the service worker");
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker
-        .register("/sw.js", { scope: "/" })
+        .register("PWA-Suggest-A-Movie/sw.js")
         .catch(function (error) {
           // Something went wrong during registration. The sw.js file
           // might be unavailable or contain a syntax error.
