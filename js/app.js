@@ -20,16 +20,17 @@ const APP = {
     setTimeout(APP.checkNavCount, 10000);
     console.log("init function called");
   },
-
   registerSW: () => {
     //register the service worker
     console.log("register the service worker");
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("/sw.js").catch(function (error) {
-        // Something went wrong during registration. The sw.js file
-        // might be unavailable or contain a syntax error.
-        console.warn(error);
-      });
+      navigator.serviceWorker
+        .register("PWA-Suggest-A-Movie-main/sw.js")
+        .catch(function (error) {
+          // Something went wrong during registration. The sw.js file
+          // might be unavailable or contain a syntax error.
+          console.warn(error);
+        });
       navigator.serviceWorker.ready.then((registration) => {
         // .ready will never reject... just wait indefinitely
         APP.sw = registration.active;
